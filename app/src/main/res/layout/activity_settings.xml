@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:src="@drawable/default" />
+        android:src="@drawable/defaultimage" />
 
     <TextView
         android:id="@+id/settings_display_name"
