@@ -1,6 +1,7 @@
 package com.example.ravishankar.lapitchat;
 
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +27,9 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView mStatus;
     private CircleImageView mImage;
     private Button mStatusbtn;
+    private Button mImageBtn;
 
+    private static final int GALLARY_PIC = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +39,9 @@ public class SettingsActivity extends AppCompatActivity {
         mStatus = (TextView) findViewById(R.id.settings_status);
         mImage = (CircleImageView) findViewById(R.id.settings_image);
         mStatusbtn = (Button)findViewById(R.id.settings_status_btn);
+        mImageBtn = (Button)findViewById(R.id.settings_image_btn);
+
+        //firebase
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         String uid = currentUser.getUid();
@@ -66,6 +72,16 @@ public class SettingsActivity extends AppCompatActivity {
                 Intent statusIntent = new Intent(SettingsActivity.this, StatusActivity.class);
                 statusIntent.putExtra("status_value",status_value);
                 startActivity(statusIntent);
+            }
+        });
+
+        mImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent gallaryIntent = new Intent();
+                gallaryIntent.setType("image/*");
+                gallaryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(gallaryIntent, "SELECT IMAGE"), GALLARY_PIC);
             }
         });
     }
