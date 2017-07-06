@@ -1,6 +1,7 @@
 package com.example.ravishankar.lapitchat;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.w3c.dom.Text;
 
@@ -78,11 +81,23 @@ public class SettingsActivity extends AppCompatActivity {
         mImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //CropImage.activity().setGuidelines(CropImageView.Guidelines.ON).start(SettingsActivity.this);
+
                 Intent gallaryIntent = new Intent();
                 gallaryIntent.setType("image/*");
                 gallaryIntent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(gallaryIntent, "SELECT IMAGE"), GALLARY_PIC);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == GALLARY_PIC && resultCode == RESULT_OK){
+            Uri  imageUri = data.getData();
+            CropImage.activity(imageUri)
+                    .start(this);
+        }
     }
 }
