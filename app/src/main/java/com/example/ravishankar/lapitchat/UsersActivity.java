@@ -1,6 +1,7 @@
 package com.example.ravishankar.lapitchat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -53,6 +54,19 @@ public class UsersActivity extends AppCompatActivity {
                 viewHolder.setName(model.getName());
                 viewHolder.setStatus(model.getStatus());
                 viewHolder.setThumbImage(model.getThumbnail(), getApplicationContext());
+
+                // getting the key for particular view
+                final String uid = getRef(position).getKey();
+
+                //setting onclick listener on mView
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent profileIntent = new Intent(UsersActivity.this, ProfileActivity.class);
+                        profileIntent.putExtra("user_id", uid);
+                        startActivity(profileIntent);
+                    }
+                });
             }
         };
 
