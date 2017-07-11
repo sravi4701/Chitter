@@ -126,7 +126,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         if(requestCode == GALLARY_PIC && resultCode == RESULT_OK){
             Uri imageUri = data.getData();
-            CropImage.activity(imageUri).setAspectRatio(1, 1).setMinCropWindowSize(500, 500)
+            CropImage.activity(imageUri).setAspectRatio(1, 1)
                     .start(SettingsActivity.this);
 //            Toast.makeText(SettingsActivity.this, imageUri, Toast.LENGTH_SHORT).show();
         }
@@ -151,10 +151,8 @@ public class SettingsActivity extends AppCompatActivity {
                     thumb_bitmap = new Compressor(this)
                             .setMaxWidth(200)
                             .setMaxHeight(200)
-                            .setQuality(75)
+                            .setQuality(60)
                             .compressToBitmap(thumb_file_path);
-
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -199,15 +197,6 @@ public class SettingsActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-//                            mDatabase.child("image").setValue(download_url).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<Void> task) {
-//                                    if(task.isSuccessful()){
-//                                        mProgressDialog.dismiss();
-//                                        Toast.makeText(SettingsActivity.this, "Success Uploading", Toast.LENGTH_SHORT).show();
-//                                    }
-//                                }
-//                            });
                         }
                         else{
                             mProgressDialog.dismiss();

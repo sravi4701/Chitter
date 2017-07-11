@@ -9,13 +9,18 @@ public class Users {
     public String image;
     public String status;
 
+
+    public String thumbnail;
+
+
     public Users(){
 
     }
-    public Users(String name, String image, String status) {
+    public Users(String name, String image, String status, String thumbnail) {
         this.name = name;
         this.image = image;
         this.status = status;
+        this.thumbnail = thumbnail;
     }
 
     public void setName(String name) {
@@ -40,5 +45,13 @@ public class Users {
 
     public String getStatus() {
         return status;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
     }
 }
