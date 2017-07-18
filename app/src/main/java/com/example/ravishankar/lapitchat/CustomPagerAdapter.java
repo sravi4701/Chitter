@@ -3,7 +3,6 @@ package com.example.ravishankar.lapitchat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
 
 /**
  * Created by ravishankar on 5/7/17.
