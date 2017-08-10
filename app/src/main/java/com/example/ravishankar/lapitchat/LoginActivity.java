@@ -16,6 +16,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -27,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private ProgressDialog mLoginProgress;
 
+    private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
     @Override
@@ -39,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference("Users");
 
         mLoginProgress = new ProgressDialog(this);
 
@@ -72,11 +77,23 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     mLoginProgress.dismiss();
-                    Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-                    // to clear all the task , once use go to main activity cann't come to previous open activity.
-                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(mainIntent);
-                    finish();
+                    String currentUser = mAuth.getCurrentUser().getUid();
+                    String device_token = FirebaseInstanceId.getInstance().getToken();
+                    mDatabase.child(currentUser).child("device_token").setValue(device_token).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                // to clear all the task , once use go to main activity cann't come to previous open activity.
+                                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(mainIntent);
+                                finish();
+                            }
+                            else{
+                                Toast.makeText(LoginActivity.this, "Cannot Sign In. Please check the form and try again", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
                 else{
                     mLoginProgress.hide();

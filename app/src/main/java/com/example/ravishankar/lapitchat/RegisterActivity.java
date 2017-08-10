@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 
@@ -93,6 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
                         String uid = currentUser.getUid();
                         mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
 
+                        final String device_token = FirebaseInstanceId.getInstance().getToken();
                         HashMap<String, String> userMap = new HashMap<>();
                         userMap.put("name", displayName);
                         userMap.put("status", "Hey there I am using Lapit Chat");
@@ -104,10 +106,22 @@ public class RegisterActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     mRegProgress.dismiss();
-                                    Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
-                                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(mainIntent);
-                                    finish();
+                                    mDatabase.child("device_token").setValue(device_token).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
+                                                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                startActivity(mainIntent);
+                                                finish();
+                                            }
+                                            else{
+                                                mRegProgress.hide();
+                                                Toast.makeText(RegisterActivity.this, "Cannot Register. Please check the form and try again", Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
+
                                 }
                             }
                         });
