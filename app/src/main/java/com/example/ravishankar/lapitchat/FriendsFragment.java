@@ -92,10 +92,10 @@ public class FriendsFragment extends Fragment {
                 mUserDatabase.child(list_user_id).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        String userName = dataSnapshot.child("name").getValue().toString();
+                        final String userName = dataSnapshot.child("name").getValue().toString();
                         String userThumbImage = dataSnapshot.child("thumbnail").getValue().toString();
                         if(dataSnapshot.hasChild("online")) {
-                            boolean userOnline = (boolean) dataSnapshot.child("online").getValue();
+                            String userOnline = dataSnapshot.child("online").getValue().toString();
                             viewHolder.setOnlineStatus(userOnline);
                         }
                         viewHolder.setName(userName);
@@ -122,6 +122,7 @@ public class FriendsFragment extends Fragment {
                                         if(i == 1){
                                             Intent chatIntent = new Intent(getContext(), ChatActivity.class);
                                             chatIntent.putExtra("user_id", list_user_id);
+                                            chatIntent.putExtra("user_name", userName);
                                             startActivity(chatIntent);
                                         }
                                     }
@@ -167,9 +168,9 @@ public class FriendsFragment extends Fragment {
             CircleImageView userImageView = (CircleImageView)mView.findViewById(R.id.users_single_image);
             Picasso.with(ctx).load(thumbimage).placeholder(R.drawable.defaultimage).into(userImageView);
         }
-        public  void setOnlineStatus(boolean isOnline){
+        public  void setOnlineStatus(String isOnline){
             ImageView onlineImage = (ImageView)mView.findViewById(R.id.users_single_online);
-            if(isOnline){
+            if(isOnline.equals("true")){
                 onlineImage.setVisibility(View.VISIBLE);
             }
             else{

@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -42,7 +43,7 @@ public class UsersActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null)
-            mUsersDatabase.child(currentUser.getUid()).child("online").setValue(true);
+            mUsersDatabase.child(currentUser.getUid()).child("online").setValue("true");
 
         mUsersList = (RecyclerView) findViewById(R.id.users_list);
         mUsersList.setHasFixedSize(true);
@@ -54,7 +55,7 @@ public class UsersActivity extends AppCompatActivity {
         super.onStop();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null)
-            mUsersDatabase.child(currentUser.getUid()).child("online").setValue(false);
+            mUsersDatabase.child(currentUser.getUid()).child("online").setValue(ServerValue.TIMESTAMP);
     }
 
     @Override
