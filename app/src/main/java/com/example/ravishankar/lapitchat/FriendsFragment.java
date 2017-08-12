@@ -2,13 +2,18 @@ package com.example.ravishankar.lapitchat;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AlertDialogLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -82,18 +87,45 @@ public class FriendsFragment extends Fragment {
             @Override
             protected void populateViewHolder(final FriendsViewHolder viewHolder, Friends model, int position) {
                 viewHolder.setDate(model.getDate());
-                String list_user_id = getRef(position).getKey();
+                final String list_user_id = getRef(position).getKey();
                 mUserDatabase.child(list_user_id).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         String userName = dataSnapshot.child("name").getValue().toString();
                         String userThumbImage = dataSnapshot.child("thumbnail").getValue().toString();
-
+                        if(dataSnapshot.hasChild("online")) {
+                            boolean userOnline = (boolean) dataSnapshot.child("online").getValue();
+                            viewHolder.setOnlineStatus(userOnline);
+                        }
                         viewHolder.setName(userName);
                         viewHolder.setThumbImage(userThumbImage, getContext());
+                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                CharSequence options[] = new CharSequence[]{"Open Profile", "Send Message"};
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
+                                builder.setTitle("Select Options");
+                                builder.setItems(options, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int i) {
+                                        // click event for each item
+                                        if(i == 0){
+                                            Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
+                                            profileIntent.putExtra("user_id", list_user_id);
+                                            startActivity(profileIntent);
+                                        }
+
+                                        if(i == 1){
+                                            Intent chatIntent = new Intent(getContext(), ChatActivity.class);
+                                            chatIntent.putExtra("user_id", list_user_id);
+                                            startActivity(chatIntent);
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
@@ -127,6 +159,15 @@ public class FriendsFragment extends Fragment {
         public void setThumbImage(String thumbimage, Context ctx){
             CircleImageView userImageView = (CircleImageView)mView.findViewById(R.id.users_single_image);
             Picasso.with(ctx).load(thumbimage).placeholder(R.drawable.defaultimage).into(userImageView);
+        }
+        public  void setOnlineStatus(boolean isOnline){
+            ImageView onlineImage = (ImageView)mView.findViewById(R.id.users_single_online);
+            if(isOnline){
+                onlineImage.setVisibility(View.VISIBLE);
+            }
+            else{
+                onlineImage.setVisibility(View.INVISIBLE);
+            }
         }
     }
 }

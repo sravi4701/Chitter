@@ -8,11 +8,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -21,10 +27,16 @@ public class UsersActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private RecyclerView mUsersList;
     private DatabaseReference mUsersDatabase;
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null)
+            mUsersDatabase.child(currentUser.getUid()).child("online").setValue(true);
+
+        mAuth = FirebaseAuth.getInstance();
 
         mToolbar = (Toolbar) findViewById(R.id.users_actionbar);
         setSupportActionBar(mToolbar);
@@ -38,6 +50,13 @@ public class UsersActivity extends AppCompatActivity {
         mUsersList.setLayoutManager(new LinearLayoutManager(this));
 
     }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null)
+            mUsersDatabase.child(currentUser.getUid()).child("online").setValue(false);
+    }
 
     @Override
     protected void onStart() {
@@ -50,14 +69,27 @@ public class UsersActivity extends AppCompatActivity {
                 mUsersDatabase
         ) {
             @Override
-            protected void populateViewHolder(UsersViewHolder viewHolder, Users model, int position) {
+            protected void populateViewHolder(final UsersViewHolder viewHolder, Users model, int position) {
                 viewHolder.setName(model.getName());
                 viewHolder.setStatus(model.getStatus());
                 viewHolder.setThumbImage(model.getThumbnail(), getApplicationContext());
-
                 // getting the key for particular view
                 final String uid = getRef(position).getKey();
 
+                mUsersDatabase.child(uid).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.hasChild("online")) {
+                            boolean userOnline = (boolean) dataSnapshot.child("online").getValue();
+                            viewHolder.setOnlineStatus(userOnline);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
                 //setting onclick listener on mView
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -93,5 +125,15 @@ public class UsersActivity extends AppCompatActivity {
 
             Picasso.with(ctx).load(thumbimage).placeholder(R.drawable.defaultimage).into(userImageView);
         }
+        public  void setOnlineStatus(boolean isOnline){
+            ImageView onlineImage = (ImageView)mView.findViewById(R.id.users_single_online);
+            if(isOnline){
+                onlineImage.setVisibility(View.VISIBLE);
+            }
+            else{
+                onlineImage.setVisibility(View.INVISIBLE);
+            }
+        }
     }
+
 }
