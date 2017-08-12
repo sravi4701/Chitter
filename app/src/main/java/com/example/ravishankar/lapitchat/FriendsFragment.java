@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AlertDialogLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,9 +100,11 @@ public class FriendsFragment extends Fragment {
                         }
                         viewHolder.setName(userName);
                         viewHolder.setThumbImage(userThumbImage, getContext());
+
                         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                Log.v("clicked", "clicked");
                                 CharSequence options[] = new CharSequence[]{"Open Profile", "Send Message"};
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
@@ -123,14 +126,18 @@ public class FriendsFragment extends Fragment {
                                         }
                                     }
                                 });
+                                builder.show();
                             }
                         });
+
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
                 });
+
+
             }
 
         };

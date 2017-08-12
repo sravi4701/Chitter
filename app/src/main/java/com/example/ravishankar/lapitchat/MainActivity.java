@@ -30,7 +30,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
-        mUserDatabase = FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid());
+        if(mAuth.getCurrentUser() != null){
+            mUserDatabase = FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid());
+        }
         mToolbar = (Toolbar)findViewById(R.id.main_page_toolbar);
 
         setSupportActionBar(mToolbar);

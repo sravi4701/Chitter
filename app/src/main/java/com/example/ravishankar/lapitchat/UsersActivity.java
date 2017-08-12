@@ -32,18 +32,17 @@ public class UsersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null)
-            mUsersDatabase.child(currentUser.getUid()).child("online").setValue(true);
-
         mAuth = FirebaseAuth.getInstance();
-
         mToolbar = (Toolbar) findViewById(R.id.users_actionbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("All Users");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mUsersDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null)
+            mUsersDatabase.child(currentUser.getUid()).child("online").setValue(true);
 
         mUsersList = (RecyclerView) findViewById(R.id.users_list);
         mUsersList.setHasFixedSize(true);
