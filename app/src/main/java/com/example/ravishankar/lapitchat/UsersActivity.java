@@ -80,7 +80,7 @@ public class UsersActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot.hasChild("online")) {
-                            boolean userOnline = (boolean) dataSnapshot.child("online").getValue();
+                            String userOnline = dataSnapshot.child("online").getValue().toString();
                             viewHolder.setOnlineStatus(userOnline);
                         }
                     }
@@ -125,9 +125,9 @@ public class UsersActivity extends AppCompatActivity {
 
             Picasso.with(ctx).load(thumbimage).placeholder(R.drawable.defaultimage).into(userImageView);
         }
-        public  void setOnlineStatus(boolean isOnline){
+        public  void setOnlineStatus(String isOnline){
             ImageView onlineImage = (ImageView)mView.findViewById(R.id.users_single_online);
-            if(isOnline){
+            if(isOnline.equals("true")){
                 onlineImage.setVisibility(View.VISIBLE);
             }
             else{

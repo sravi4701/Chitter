@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
 
-        getSupportActionBar().setTitle("Lapit Chat");
+        getSupportActionBar().setTitle("Chitter");
 
         mViewPager = (ViewPager)findViewById(R.id.main_tabPager);
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LapitChat</string>
+    <string name="app_name">Chitter</string>
     <string name="need_a_new_account">Need a new Account ?</string>
     <string name="display_name">Display Name</string>
     <string name="email">Email</string>

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="Welcome to Lapit Chat App"
+        android:text="Welcome to Chitter App"
         android:textColor="@android:color/white"
         android:textSize="24sp" />
 
